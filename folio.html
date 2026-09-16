@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>포트폴리오 프로필</title>
+
+  <!-- ================================================================= -->
+  <!-- [SECTION 1] CSS STYLES                                            -->
+  <!-- ================================================================= -->
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f9;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 130px 40px 80px 40px;
+    }
+
+    /* 상단 고정 네비게이션 바 (확대) */
+    .top-nav {
+      position: fixed;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 60px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      gap: 12px;
+      z-index: 1000;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      padding: 14px 28px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #64748b;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-btn:hover {
+      color: #0f172a;
+      background-color: #f8fafc;
+    }
+
+    .nav-btn.active {
+      color: #0f172a;
+      background-color: #f1f5f9;
+    }
+
+    /* 화면 섹션 공통 (최대 너비 1240px 확장) */
+    .page-section {
+      display: none;
+      width: 100%;
+      max-width: 1240px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 홈 화면 프로필 카드 (확대) */
+    .profile-card {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 620px;
+      margin: 24px auto 0 auto;
+      border-radius: 32px;
+      padding: 56px 44px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.05);
+      border: 1px solid #ebedf0;
+      text-align: center;
+    }
+
+    .profile-img-container {
+      width: 170px;
+      height: 170px;
+      margin: 0 auto 24px auto;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #f0f4f9;
+      color: #334155;
+      font-weight: 700;
+      font-size: 18px;
+      padding: 12px 28px;
+      border-radius: 28px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #edf0f5;
+      margin: 36px 0 28px 0;
+    }
+
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .menu-btn {
+      width: 100%;
+      padding: 24px 30px;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      text-align: left;
+      font-size: 19px;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .menu-btn:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    /* 상세 페이지 타이틀 및 카드 (확대) */
+    .page-header {
+      font-size: 40px;
+      font-weight: 800;
+      color: #0f172a;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      border-bottom: 3px solid #e2e8f0;
+    }
+
+    .content-card {
+      background-color: #ffffff;
+      border-radius: 24px;
+      border: 1px solid #e2e8f0;
+      padding: 44px 48px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.03);
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 24px;
+    }
+
+    .info-group {
+      margin-bottom: 28px;
+    }
+
+    .info-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-label {
+      font-weight: 700;
+      font-size: 20px;
+      color: #1e293b;
+      margin-bottom: 10px;
+    }
+
+    .info-desc {
+      font-size: 18px;
+      color: #475569;
+      line-height: 1.8;
+      word-break: keep-all;
+    }
+
+    /* 강조 박스 (자기소개/흥미 영역 확대) */
+    .highlight-box {
+      background-color: #f8fafc;
+      border-left: 6px solid #0f172a;
+      padding: 22px 28px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-size: 18px;
+      color: #334155;
+      line-height: 1.8;
+    }
+
+    /* 태그 / 칩 (확대) */
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      background-color: #e2e8f0;
+      color: #334155;
+      font-size: 17px;
+      padding: 8px 20px;
+      border-radius: 22px;
+      font-weight: 600;
+    }
+
+    /* 구글 드라이브 미니 카드 (확대) */
+    .drive-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-top: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .drive-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow: hidden;
+    }
+
+    .drive-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .drive-details {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .drive-filename {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .drive-domain {
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .drive-btn {
+      background-color: #1e293b;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* 링크 스타일 (확대) */
+    .link-text {
+      color: #2563eb;
+      font-size: 17px;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .link-text:hover {
+      text-decoration: underline;
+    }
+
+    /* 수업 및 목차 영역 (확대) */
+    .lesson-box {
+      margin-top: 20px;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+
+    .lesson-img {
+      width: 100%;
+      max-width: 650px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .lesson-img-link {
+      display: block;
+      text-align: center;
+      background-color: #f8fafc;
+      padding: 24px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================================================================= -->
+  <!-- [SECTION 2] HTML BODY                                             -->
+  <!-- ================================================================= -->
+
+  <!-- 상단 고정 네비게이션 바 -->
+  <nav class="top-nav">
+    <button class="nav-btn active" onclick="switchTab('home')">홈</button>
+    <button class="nav-btn" onclick="switchTab('info')">01. 기본 인적 사항</button>
+    <button class="nav-btn" onclick="switchTab('career')">02. 진로활동</button>
+    <button class="nav-btn" onclick="switchTab('skills')">03. 주요 활동 및 스킬</button>
+    <button class="nav-btn" onclick="switchTab('projects')">04. 프로젝트</button>
+  </nav>
+
+  <!-- [HOME] 프로필 메인 카드 화면 -->
+  <section id="page-home" class="page-section active">
+    <div class="profile-card">
+      <div class="profile-img-container">
+        <img src="https://i.pinimg.com/236x/7e/0d/6f/7e0d6f9748c0b6730a60986e3f7914a5.jpg" alt="Profile" class="profile-img">
+      </div>
+      <div class="badge">Developer & Security</div>
+      <hr class="divider">
+      <div class="menu-list">
+        <button class="menu-btn" onclick="switchTab('info')">01. 기본 인적 사항</button>
+        <button class="menu-btn" onclick="switchTab('career')">02. 진로활동</button>
+        <button class="menu-btn" onclick="switchTab('skills')">03. 주요 활동 및 스킬</button>
+        <button class="menu-btn" onclick="switchTab('projects')">04. 프로젝트</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- [PAGE 01] 기본 인적 사항 -->
+  <section id="page-info" class="page-section">
+    <h1 class="page-header">01. 기본 인적 사항</h1>
+    <div class="content-card">
+      <div class="section-title">자기소개 & 가치관</div>
+      
+      <div class="info-group">
+        <p class="info-desc"><strong>이름:</strong> 이도근</p>
+        <p class="info-desc"><strong>이메일:</strong> s26014@sunrint.hs.kr</p>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">나의 소개</div>
+        <p class="info-desc">저는 열정을 가지고 살아가며, 선린인터넷고에 재학중인 이도근입니다.</p>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">나의 강점</div>
+        <p class="info-desc">저의 강점은 유머, 창의성, 판단력 입니다. 이를 바탕으로 맡은 직무에서 분위기를 활발하게 하고 창의성과 판단력으로 팀을 좋은 방향으로 이끌수 있도록 하겠습니다.</p>
+      </div>
+
+      <div class="highlight-box">
+        <strong>흥미:</strong> 정보보안과 경영에 흥미가 있으며 시스템 해킹, 웹 해킹, 웹 & 앱 개발, 백앤드 개발, 시큐리 코딩을 탐구합니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- [PAGE 02] 진로활동 -->
+  <section id="page-career" class="page-section">
+    <h1 class="page-header">02. 진로활동</h1>
+    <div class="content-card">
+      <div class="info-group">
+        <div class="info-label">관심 분야</div>
+        <div class="chip-container">
+          <span class="chip">시스템 해킹</span>
+          <span class="chip">웹해킹</span>
+          <span class="chip">웹 & 앱 개발</span>
+          <span class="chip">백앤드 개발</span>
+          <span class="chip">시큐리 코딩</span>
+          <span class="chip">경영학</span>
+        </div>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">관심 직업</div>
+        <p class="info-desc">정보보안 전문가 / 사업가</p>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">진로 활동 학습지</div>
+        <a href="https://drive.google.com" target="_blank" class="drive-card">
+          <div class="drive-info">
+            <svg class="drive-icon" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+              <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+              <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+              <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 10.15z" fill="#ea4335"/>
+              <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+              <path d="m59.8 50h27.5c0-1.55-.4-3.1-1.2-4.5l-13.75-23.8c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8z" fill="#ffba00"/>
+              <path d="m31.1 50 12.55 21.8c1.35.8 2.9 1.2 4.5 1.2h18.5c1.6 0 3.15-.4 4.5-1.2l-12.55-21.8z" fill="#2684fc"/>
+            </svg>
+            <div class="drive-details">
+              <span class="drive-filename">1olWjfnde9TWK5lebh0LT-Zb4399CgvZC</span>
+              <span class="drive-domain">https://drive.google.com</span>
+            </div>
+          </div>
+          <div class="drive-btn">Google Drive에 연결해 미리보기</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- [PAGE 03] 주요 활동 및 스킬 -->
+  <section id="page-skills" class="page-section">
+    <h1 class="page-header">03. 주요 활동 및 스킬</h1>
+    <div class="content-card">
+      <div class="info-group">
+        <div class="info-label">교육</div>
+        <p class="info-desc">• 서울백산초등학교&emsp;&nbsp;(2017.03 - 2023.02)</p>
+        <p class="info-desc">• 석관중학교&emsp;&emsp;&emsp;&emsp;(2023.03 - 2026.02)</p>
+        <p class="info-desc">• 선린인터넷고등학교&nbsp;(2026 - )</p>
+      </div>
+      <div class="info-group">
+        <div class="info-label">동아리 활동</div>
+        <p class="info-desc">• IRIS&ensp;&ensp;&ensp;&ensp;&nbsp;(2026 - )</p>
+        <p class="info-desc">• PHASE&ensp;&ensp;(2026 - )</p>
+        <p class="info-desc">• SPIKE&ensp;&ensp;&ensp;(2026 - )</p>
+        <p class="info-desc">• TRINITY&ensp;(2026 - )</p>
+        <br>
+        <p class="info-desc">• SSF 3교시 수업자로 참여</p>
+        
+        <div class="lesson-box">
+          <a href="https://drive.google.com/file/d/1cTBfY_mL7Zh6ngQKFwCoqxV4NX7cM_w_/view?usp=sharing" target="_blank" class="lesson-img-link">
+            <img src="https://lh3.googleusercontent.com/d/1cTBfY_mL7Zh6ngQKFwCoqxV4NX7cM_w_" alt="SSF 3교시 수업자 자료" class="lesson-img" onerror="this.src='https://i.pinimg.com/236x/7e/0d/6f/7e0d6f9748c0b6730a60986e3f7914a5.jpg';">
+          </a>
+        </div>
+        <br>
+        <p class="info-desc">• 노션 정리</p>
+        <a href="https://app.notion.com/p/IRIS-3dd8acae2fc0809a8c1ddef6b02757e8?source=copy_link" target="_blank" class="link-text">
+          https://app.notion.com/p/IRIS-3dd8acae2fc0809a8c1ddef6b02757e8?source=copy_link
+        </a>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">스킬</div>
+        <p class="info-desc"><strong>언어:</strong> Python, C, HTML</p>
+        <p class="info-desc"><strong>운영체제:</strong> Android, IOS, Window, Linux</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- [PAGE 04] 프로젝트 -->
+  <section id="page-projects" class="page-section">
+    <h1 class="page-header">04. 프로젝트</h1>
+    <div class="content-card">
+      <div class="info-group">
+        <div class="info-label">독서 주제탐구보고서</div>
+        <a href="https://drive.google.com" target="_blank" class="drive-card">
+          <div class="drive-info">
+            <svg class="drive-icon" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+              <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+              <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+              <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 10.15z" fill="#ea4335"/>
+              <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+              <path d="m59.8 50h27.5c0-1.55-.4-3.1-1.2-4.5l-13.75-23.8c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8z" fill="#ffba00"/>
+              <path d="m31.1 50 12.55 21.8c1.35.8 2.9 1.2 4.5 1.2h18.5c1.6 0 3.15-.4 4.5-1.2l-12.55-21.8z" fill="#2684fc"/>
+            </svg>
+            <div class="drive-details">
+              <span class="drive-filename">1dALGO1AXdXPagwdZjLKQ-dyULb0t6Mkr</span>
+              <span class="drive-domain">https://drive.google.com</span>
+            </div>
+          </div>
+          <div class="drive-btn">Google Drive에 연결해 미리보기</div>
+        </a>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">교과 프로젝트 작품 & 결과물</div>
+        <a href="https://app.notion.com/p/3878acae2fc0802cbd70c757e6f668f8?source=copy_link" target="_blank" class="link-text">
+          https://app.notion.com/p/3878acae2fc0802cbd70c757e6f668f8?source=copy_link
+        </a>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">개인 프로젝트 작품 & 결과물</div>
+        <a href="https://canva.link/3r51tjpaj3v4gau" target="_blank" class="link-text">
+          https://canva.link/3r51tjpaj3v4gau
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- [SECTION 3] JAVASCRIPT                                            -->
+  <!-- ================================================================= -->
+  <script>
+    function switchTab(tabId) {
+      const pages = document.querySelectorAll('.page-section');
+      pages.forEach(page => page.classList.remove('active'));
+
+      const targetPage = document.getElementById(`page-${tabId}`);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      const navButtons = document.querySelectorAll('.nav-btn');
+      navButtons.forEach(btn => btn.classList.remove('active'));
+
+      const tabMap = {
+        'home': 0,
+        'info': 1,
+        'career': 2,
+        'skills': 3,
+        'projects': 4
+      };
+
+      if (tabMap[tabId] !== undefined) {
+        navButtons[tabMap[tabId]].classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>
